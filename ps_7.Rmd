@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+#We read in the necessary libraries for the problem set.
 library(tidyverse)
 library(dplyr)
 library(knitr)
@@ -18,16 +19,69 @@ library(kableExtra)
 library(fs)
 library(foreign)
 
+#Mr. Schroeder's dataset is read in (the file was
+#downloaded and moved during class).
+jack <- read_csv("jack.csv") %>% 
+#We unite the state and district columns by a hyphen to
+#have an output of regular district notation (ex. NJ-07).
+  unite("district", c("state", "district"), sep="-")
+
+#We take the polldata. THIS HAS TO CHANGE BEFORE KNITTING.
 polldata <- dir_ls("~/R/ps_7_starter/2018-live-poll-results-master/data/")
 
+#We map the data to upshot. We also separate by hyphen
+#to extract district and wavenum from the file names.
 upshot <- map_dfr(polldata, read_csv, .id="name") %>% 
   separate(name, c("directory","2","live","unneeded","results","poll","district","wavenum"),sep="-")%>% 
+#We separate state and district. We will unite them later
+#after adding a hyphen.
   separate(district,c("state","district"),sep=2) %>% 
-  separate(wavenum,c("wave","csv"),sep=1)%>% 
-  select(state,district,wave,response,ager,educ,race_eth,gender,approve)
+#We separate wavenum to get rid of the ".csv" portion.
+  separate(wavenum,c("wave","csv"),sep=1) %>% 
+#We unselect the unnecessary variables.
+  select(-directory, -`2`,-live,-unneeded,-results,-poll,-csv)
 
+#We make the state abbreviations uppercase.
 upshot$state <- str_to_upper(upshot$state)
 
+#Now we can unite state and district to make a uniform
+#district column.
 upshot <- upshot %>% 
   unite("district", c("state", "district"), sep="-")
+
+#We left_join upshot and jack to add the actual results
+#to the poll data.
+joined <- left_join(upshot, jack)
+
+#We want to examine whether districts with a larger
+#proportion of outliers were more unreliable in predicting
+#vote totals. To do this, we group final_weights into
+#categories. We treat a final_weight below 0.5 and above
+#1.5 as an outlier.
+join3 <- joined %>% 
+#This is achieved using a case_when.
+  mutate(grouped_final_weight = case_when(final_weight < 0.5 ~ "Outlier",
+                                          final_weight >= 0.5 & final_weight <= 1.5 ~ "Normal",
+                                          final_weight > 1.5  ~ "Outlier")) %>% 
+#We then group_by district and our new variable.
+  group_by(district,grouped_final_weight) %>% 
+#Counting prepares us for the spread.
+  count() %>% 
+#Spreading by the new variable to generate totals in
+#each district polled. It is worth noting here that wave
+#is not important. We just want to know the total
+#proportion of outliers. As a result, districts polled
+#twice are not treated any differently.
+  spread(key=grouped_final_weight, value=n) %>% 
+#We create a total of normal and outlier results, and then
+#divide the number of outliers by this number to get our
+#outlier percentage.
+  mutate(total = Normal + Outlier, outlier_per = Outlier/total)
+
+#We then left_join these results with our previously
+#joined data to create newdata.
+newdata <- left_join(joined, join3)
+
+#Showing newdata for now, DELETE BEFORE SUBMISSION.
+newdata
 ```
