@@ -60,8 +60,7 @@ joined <- left_join(upshot, jack)
 #1.5 as an outlier.
 join3 <- joined %>% 
 #This is achieved using a case_when.
-  mutate(grouped_final_weight = case_when(final_weight < 0.5 ~ "Outlier",
-                                          final_weight >= 0.5 & final_weight <= 1.5 ~ "Normal",
+  mutate(grouped_final_weight = case_when(final_weight < 1.5 ~ "Normal",
                                           final_weight > 1.5  ~ "Outlier")) %>% 
 #We then group_by district and our new variable.
   group_by(district,grouped_final_weight) %>% 
