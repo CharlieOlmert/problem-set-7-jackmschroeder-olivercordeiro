@@ -82,5 +82,8 @@ join3 <- joined %>%
 newdata <- left_join(joined, join3)
 
 #Showing newdata for now, DELETE BEFORE SUBMISSION.
-newdata
+newdata2 <- inner_join(jack, join3) %>% 
+  arrange(desc(outlier_per))
+
+newdata2
 ```
