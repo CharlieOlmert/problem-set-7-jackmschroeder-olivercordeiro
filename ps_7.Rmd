@@ -60,7 +60,7 @@ joined <- left_join(upshot, jack)
 #1.5 as an outlier.
 join1 <- joined %>% 
 #This is achieved using a case_when.
-  mutate(grouped_final_weight = case_when(final_weight < 1.5 ~ "Normal",
+  mutate(grouped_final_weight = case_when(final_weight <= 1.5 ~ "Normal",
                                           final_weight > 1.5  ~ "Outlier")) %>% 
 #We then group_by district and our new variable.
   group_by(district,grouped_final_weight) %>% 
@@ -101,13 +101,13 @@ join2 <- upshot %>%
 #Upshot to over/underexaggerate the blue wave!). This initial advantage is Dem-Rep.
   mutate(initialad = Dem-Rep) %>% 
 #We then divide this number by the total to get our real Democratic Advantage.
-  mutate(democratic_advantage = initialad/total) %>% 
+  mutate(dem_advantage_forecast = initialad/total) %>% 
   #I select the necessary columns.
-  select(district,wave,democratic_advantage) %>% 
+  select(district,wave,dem_advantage_forecast) %>% 
 #We still have some work to do because some districts were polled twice. Unlike with the
 #outliers above, we only want the forecasted democratic advantage from the latest poll
 #in each district.
-    spread(key=wave,value=democratic_advantage)
+    spread(key=wave,value=dem_advantage_forecast)
 
 #NA values have to be 0 for the following code to work.
 join2[is.na(join2)] <- 0
@@ -124,18 +124,34 @@ join2 <- join2 %>%
                                        3 != 0.0000000000 ~ `3`)) %>% 
 #That code worked for the non-NA values, but not the NA values I made equal to 0. Surprisingly,
 #the following code finishes the job. By making a new Democratic advantage column (this one also
-#called democratic_advantage), I make it the sum of waves 1 and 2 if the column I just created is equal
+#called dem_advantage_forecast), I make it the sum of waves 1 and 2 if the column I just created is equal
 #to 0, and equal to the above column if it has a value. In other words, the final result is the
 #Democratic advantage of the last polling of each district.
-  mutate(democratic_advantage = case_when(demadforecastfake == 0.0000000000 ~ (`1` + `2`),
+  mutate(dem_advantage_forecast = case_when(demadforecastfake == 0.0000000000 ~ (`1` + `2`),
                                    TRUE ~ demadforecastfake)) %>% 
-#I only want district and democratic_advantage moving forward.
-  select(district,democratic_advantage)
+#I only want district and dem_advantage_forecast moving forward.
+  select(district,dem_advantage_forecast)
 
 #We then join this to newdata2 to create newdata3, which is newdata2 with the forecasted
 #percent margins added.
 newdata3 <- left_join(newdata2, join2) %>% 
-  select(district, win_name, win_party, dem_votes, rep_votes, other_votes, Normal, Outlier, total, outlier_per, democratic_advantage)
+  select(district, win_name, win_party, dem_votes, rep_votes, other_votes, Normal, Outlier, total, outlier_per, dem_advantage_forecast) %>% 
+#Three mutates create total votes, initial Democratic advantage, and real Democratic advantage for our
+#district-by-district results.
+  mutate(totalvotes = dem_votes + rep_votes + other_votes, initialad = dem_votes - rep_votes, dem_advantage_real = initialad/totalvotes) %>% 
+#Then we select out the variables we do not need.
+  select(-dem_votes, -rep_votes, -other_votes, -Normal, -Outlier, -total, -totalvotes, -initialad) %>% 
+#Now, we subtract the Democratic advantages to get our margin of error.
+  mutate(margin_of_error = dem_advantage_real - dem_advantage_forecast) %>% 
+#We now arrange by margin of error in descending order.
+  arrange(desc(margin_of_error)) %>% 
+#We no longer need the individual Democratic advantages.
+  select(-dem_advantage_real, -dem_advantage_forecast)
+
+newdata3[is.na(newdata3)] <- 0
+
+newdata3 <- newdata3 %>% 
+  mutate(correlation = cor(margin_of_error, outlier_per))
 
 newdata3
 ```
