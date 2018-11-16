@@ -1,6 +1,6 @@
 ---
 title: 'Problem Set #7'
-author: "Jack Schroeder"
+author: "Jack Schroeder and Oliver Cordeiro"
 date: "11/15/2018"
 output: html_document
 ---
@@ -27,7 +27,7 @@ jack <- read_csv("jack.csv") %>%
   unite("district", c("state", "district"), sep="-")
 
 #We take the polldata. THIS HAS TO CHANGE BEFORE KNITTING.
-polldata <- dir_ls("~/R/ps_7_starter/2018-live-poll-results-master/data/")
+polldata <- dir_ls("2018-live-poll-results-master/data/")
 
 #We map the data to upshot. We also separate by hyphen
 #to extract district and wavenum from the file names.
