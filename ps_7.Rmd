@@ -58,7 +58,7 @@ joined <- left_join(upshot, jack)
 #vote totals. To do this, we group final_weights into
 #categories. We treat a final_weight below 0.5 and above
 #1.5 as an outlier.
-join3 <- joined %>% 
+join1 <- joined %>% 
 #This is achieved using a case_when.
   mutate(grouped_final_weight = case_when(final_weight < 1.5 ~ "Normal",
                                           final_weight > 1.5  ~ "Outlier")) %>% 
@@ -79,11 +79,63 @@ join3 <- joined %>%
 
 #We then left_join these results with our previously
 #joined data to create newdata.
-newdata <- left_join(joined, join3)
+newdata <- left_join(joined, join1)
 
-#Showing newdata for now, DELETE BEFORE SUBMISSION.
-newdata2 <- inner_join(jack, join3) %>% 
+#An inner_join of the results and the outlier table gives
+#us almost everything we need. We just need to add the
+#forecasted vote percentages.
+newdata2 <- inner_join(jack, join1) %>% 
   arrange(desc(outlier_per))
 
-newdata2
+#We then find the forecasted vote percentages. This starts by using our joined dataset
+join2 <- upshot %>% 
+#We first group_by state, district, wave, and response. This is similar to the midterm.
+  group_by(district,wave,response) %>% 
+#We need to tally by final_weight to get The Upshot's weighted predictions.
+  tally(wt=final_weight)%>% 
+#We use a case_when to sum up each response in a total column.
+  mutate(total=case_when(response%in%c("Dem", "Rep","Und","3","4","5","6") ~ sum(n))) %>%
+#We spread using response as a key and the n from tally as a value.
+  spread(key=response, value=n)%>% 
+#Then we can create Democratic Advantage (since we're seeing what factors caused The
+#Upshot to over/underexaggerate the blue wave!). This initial advantage is Dem-Rep.
+  mutate(initialad = Dem-Rep) %>% 
+#We then divide this number by the total to get our real Democratic Advantage.
+  mutate(democratic_advantage = initialad/total) %>% 
+  #I select the necessary columns.
+  select(district,wave,democratic_advantage) %>% 
+#We still have some work to do because some districts were polled twice. Unlike with the
+#outliers above, we only want the forecasted democratic advantage from the latest poll
+#in each district.
+    spread(key=wave,value=democratic_advantage)
+
+#NA values have to be 0 for the following code to work.
+join2[is.na(join2)] <- 0
+
+#Returning to the upshot data that will be joined: two case_whens should do the trick. This is the code
+#Mr. Schroeder used on the midterm.
+join2 <- join2 %>% 
+#The first casewhen tells R to make the value of our new column the third wave value if
+#it is not equal to 0 (that is, not a 0 value created by our NA code above). If it is equal
+#to 0, it should take the sum of waves 1 and 2, which, because I have made NA values 0, should
+#take districts not polled in the third wave and set the new column equal to the Democratic advantage
+#in whichever wave it was actually polled in.
+  mutate(demadforecastfake = case_when(3 == 0.0000000000 ~ (`1` + `2`),
+                                       3 != 0.0000000000 ~ `3`)) %>% 
+#That code worked for the non-NA values, but not the NA values I made equal to 0. Surprisingly,
+#the following code finishes the job. By making a new Democratic advantage column (this one also
+#called democratic_advantage), I make it the sum of waves 1 and 2 if the column I just created is equal
+#to 0, and equal to the above column if it has a value. In other words, the final result is the
+#Democratic advantage of the last polling of each district.
+  mutate(democratic_advantage = case_when(demadforecastfake == 0.0000000000 ~ (`1` + `2`),
+                                   TRUE ~ demadforecastfake)) %>% 
+#I only want district and democratic_advantage moving forward.
+  select(district,democratic_advantage)
+
+#We then join this to newdata2 to create newdata3, which is newdata2 with the forecasted
+#percent margins added.
+newdata3 <- left_join(newdata2, join2) %>% 
+  select(district, win_name, win_party, dem_votes, rep_votes, other_votes, Normal, Outlier, total, outlier_per, democratic_advantage)
+
+newdata3
 ```
