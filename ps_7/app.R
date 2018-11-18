@@ -8,26 +8,38 @@
 #
 
 library(shiny)
+library(tidyverse)
+library(readr)
+ps7 <- readRDS("ps7.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   titlePanel("Deez nutz"),
    
-   # Sidebar with a slider input for number of bins 
+   # Sidebar with a select input for seat flip 
    sidebarLayout(
       sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30)
+         selectInput("flip",
+                     "Seat Status",
+                     choices = unique(ps7$flip))
       ),
       
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot")
+      # Show a plot of the generated distribution. Include description text. 
+      mainPanel("We set out to judge how accurate The Upshot was in calculating final_weight 
+                We did this by finding the correlation between margin of error (forecasted 
+                Democratic advantage minus actual Democratic advantage) and the percentage 
+                of outliers in each poll (respondents with a high final_weight). Given all 
+                the slack polling is getting these days with failing to properly sample and 
+                weigh their respective populations, we were expecting a strong correlation 
+                between the two variables. Instead, we found no correlation. We are currently 
+                at work on making a Shiny app displaying these results. Do we need to do any 
+                more work with the data, or is our conclusion interesting enough to stand on 
+                its own? While the headline 'Upshot Correctly Weighed Results' isn't attractive 
+                on its own, given most people distrust polling these days, I think our findings 
+                are rather significant.",
+         plotOutput("myPlot")
       )
    )
 )
@@ -35,13 +47,16 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+   output$myPlot <- renderPlot({
+    ps7 %>% 
+       filter(flip %in% input$flip) %>% 
+       ggplot(aes(x = margin_of_error, y = outlier_per, color = win_party)) +
+       geom_point() +
+       geom_smooth(method = "lm") +
+       ggtitle("Margin of Error vs. Outlier Percentage in Upshot Polling", subtitle = "Sorted by Seat Status, Colored by Winning Party") +
+       xlab("Margin of Error") +
+       ylab("Outlier Percentage") +
+       scale_color_manual(values = c(D = "blue", R = "red", UNDECIDED = "forest green"))
    })
 }
 
