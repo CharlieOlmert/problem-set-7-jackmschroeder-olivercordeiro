@@ -1,4 +1,4 @@
-﻿state,district,win_name,win_party,dem_votes,rep_votes,other_votes
+state,district,win_name,win_party,dem_votes,rep_votes,other_votes
 AL,01,Bradley Byrne,R,"88,365","152,308",157
 AL,02,Martha Roby,R,"86,580","138,581",419
 AL,03,Mike Rogers,R,"83,145","147,480",149
@@ -29,7 +29,7 @@ CA,06,Doris Matsui,D,"99,646",0,0
 CA,07,Ami Bera,D,"77,165","65,691",0
 CA,08,Paul Cook,R,0,"122,021",0
 CA,09,Jerry McNerney,D,"62,228","51,235",0
-CA,10,UNDECIDED,UNDECIDED,"89,763","86,401",0
+CA,10,Josh Harder,D,"89,763","86,401",0
 CA,11,Mark DeSaulnier,D,"141,772","52,007",0
 CA,12,Nancy Pelosi,D,"185,173","30,507",0
 CA,13,Barbara Lee,D,"145,441",0,"19,689"
@@ -64,7 +64,7 @@ CA,41,Mark Takano,D,"45,606","29,919",0
 CA,42,Ken Calvert,R,"44,671","65,166",0
 CA,43,Maxine Waters,D,"102,863","32,782",0
 CA,44,Nanette Barragan,D,"98,366",0,0
-CA,45,UNDECIDED,UNDECIDED,"101,955","103,975",0
+CA,45,Katie Porter,D,"101,955","103,975",0
 CA,46,Lou Correa,D,"53,883","30,196",0
 CA,47,Alan Lowenthal,D,"92,712","55,296",0
 CA,48,Harley Rouda,D,"105,047","97,719",0
@@ -179,7 +179,7 @@ LA,04,Mike Johnson,R,"72,923","139,307","4,612"
 LA,05,Ralph Abraham,R,"67,113","149,010","7,810"
 LA,06,Garret Graves,R,"76,697","186,502","5,254"
 ME,01,Chellie Pingree,D,"198,853","109,714","29,569"
-ME,02,UNDECIDED,UNDECIDED,"129,556","131,466","23,433"
+ME,02,Jared Golden,D,"129,556","131,466","23,433"
 MD,01,Andy Harris,R,"113,050","180,477","5,712"
 MD,02,Dutch Ruppersberger,D,"157,764","74,493","4,966"
 MD,03,John Sarbanes,D,"186,207","78,167","6,926"
@@ -243,7 +243,7 @@ NH,01,Chris Pappas,D,"155,904","131,034","4,162"
 NH,02,Annie Kuster,D,"154,416","118,680","6,364"
 NJ,01,Donald Norcross,D,"163,948","85,193","5,072"
 NJ,02,Jeff Van Drew,D,"126,420","111,001","4,317"
-NJ,03,UNDECIDED,UNDECIDED,"150,311","146,887","3,815"
+NJ,03,Andy Kim,D,"150,311","146,887","3,815"
 NJ,04,Chris Smith,R,"123,995","159,965","4,209"
 NJ,05,Josh Gottheimer,D,"148,021","116,505","3,568"
 NJ,06,Frank Pallone,D,"135,770","78,570",0
