@@ -163,6 +163,8 @@ flip <- read_csv("flipdatabase.csv")
 #We join the two datasets together to get our final dataset.
 final_data <- left_join(newdata3, flip)
 
+final_data
+
 #Finally, we write the rds file that allows us to use this data in the app.
 write_rds(final_data,"ps_7/ps7.rds",compress="none")
 ```
