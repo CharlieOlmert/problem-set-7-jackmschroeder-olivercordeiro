@@ -27,19 +27,20 @@ ui <- fluidPage(
       ),
       
       # Show a plot of the generated distribution. Include description text. 
-      mainPanel("We set out to judge how accurate The Upshot was in calculating final_weight 
-                We did this by finding the correlation between margin of error (forecasted 
-                Democratic advantage minus actual Democratic advantage) and the percentage 
-                of outliers in each poll (respondents with a high final_weight). Given all 
-                the slack polling is getting these days with failing to properly sample and 
-                weigh their respective populations, we were expecting a strong correlation 
-                between the two variables. Instead, we found no correlation. We are currently 
-                at work on making a Shiny app displaying these results. Do we need to do any 
-                more work with the data, or is our conclusion interesting enough to stand on 
-                its own? While the headline 'Upshot Correctly Weighed Results' isn't attractive 
-                on its own, given most people distrust polling these days, I think our findings 
-                are rather significant.",
-         plotOutput("myPlot")
+      mainPanel(
+         plotOutput("myPlot"), 
+         "We set out to judge how accurate The Upshot was in calculating final_weight 
+          We did this by finding the correlation between margin of error (forecasted 
+         Democratic advantage minus actual Democratic advantage) and the percentage 
+         of outliers in each poll (respondents with a high final_weight). Given all 
+         the slack polling is getting these days with failing to properly sample and 
+         weigh their respective populations, we were expecting a strong correlation 
+         between the two variables. Instead, we found no correlation. We are currently 
+         at work on making a Shiny app displaying these results. Do we need to do any 
+         more work with the data, or is our conclusion interesting enough to stand on 
+         its own? While the headline 'Upshot Correctly Weighed Results' isn't attractive 
+         on its own, given most people distrust polling these days, I think our findings 
+         are rather significant."
       )
    )
 )
@@ -56,7 +57,7 @@ server <- function(input, output) {
        ggtitle("Margin of Error vs. Outlier Percentage in Upshot Polling", subtitle = "Sorted by Seat Status, Colored by Winning Party") +
        xlab("Margin of Error") +
        ylab("Outlier Percentage") +
-       scale_color_manual(values = c(D = "blue", R = "red", UNDECIDED = "forest green"))
+       scale_color_manual(values = c(D = "blue", R = "red"))
    })
 }
 
