@@ -2,10 +2,10 @@ district,flip
 AZ-02,Flip
 AZ-06,Hold
 AZ-sen,Flip
-CA-10,Undecided
+CA-10,Hold
 CA-25,Flip
-CA-39,Undecided
-CA-45,Undecided
+CA-39,Flip
+CA-45,Flip
 CA-48,Flip
 CA-49,Flip
 CO-06,Flip
@@ -25,7 +25,7 @@ IL-14,Flip
 KS-02,Hold
 KS-03,Flip
 KY-06,Hold
-ME-02,Undecided
+ME-02,Flip
 MI-08,Flip
 MI-11,Flip
 MN-02,Flip
@@ -34,7 +34,7 @@ MN-08,Flip
 NC-09,Hold
 NC-13,Hold
 NE-02,Hold
-NJ-03,Undecided
+NJ-03,Flip
 NJ-07,Flip
 NJ-11,Flip
 NM-02,Flip
@@ -42,7 +42,7 @@ NV-sen,Flip
 NY-01,Hold
 NY-11,Flip
 NY-19,Flip
-NY-22,Undecided
+NY-22,Flip
 NY-27,Undecided
 OH-01,Hold
 PA-01,Hold
