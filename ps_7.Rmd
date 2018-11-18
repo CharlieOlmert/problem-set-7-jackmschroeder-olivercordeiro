@@ -148,10 +148,21 @@ newdata3 <- left_join(newdata2, join2) %>%
 #We no longer need the individual Democratic advantages.
   select(-dem_advantage_real, -dem_advantage_forecast)
 
+#All NA values have to be 0 for the correlation to work.
 newdata3[is.na(newdata3)] <- 0
 
+#We add a correlation column to calculate overall correlation between margin of error and percentage of 
+#outliers.
 newdata3 <- newdata3 %>% 
   mutate(correlation = cor(margin_of_error, outlier_per))
 
-newdata3
+#We read in the data I used in the midterm of districts that flipped. We updated it (along with the results
+#data) for races that have been called in the last week or so.
+flip <- read_csv("flipdatabase.csv")
+
+#We join the two datasets together to get our final dataset.
+final_data <- left_join(newdata3, flip)
+
+#Finally, we write the rds file that allows us to use this data in the app.
+write_rds(final_data,"ps_7/ps7.rds",compress="none")
 ```
