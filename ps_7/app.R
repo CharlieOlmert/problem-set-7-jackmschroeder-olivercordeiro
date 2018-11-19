@@ -61,7 +61,8 @@ server <- function(input, output) {
        ylab("Outlier Percentage") +
        geom_label_repel(aes(label = district), size = 3, force = 3) +
 #This code assigns colors to our D and R values.
-       scale_color_manual(values = c(D = "blue", R = "red"))
+       scale_color_manual(values = c(D = "blue", R = "red")) +
+       guides(color=guide_legend("Winning Party"))
    })
 }
 
