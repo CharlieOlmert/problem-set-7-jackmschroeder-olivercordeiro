@@ -175,11 +175,11 @@ flip <- read_csv("flipdatabase.csv")
 #We join the two datasets together to get our final dataset.
 final_data <- left_join(newdata3, flip)
 
-final_data
-
 #Finally, we write the rds file that allows us to use this data in the app.
 write_rds(final_data,"ps_7/ps7.rds",compress="none")
 
+#We used this code to calculate correlations. It is not needed,
+#so we commented it out.
 final_data %>% 
   filter(win_party == "R", flip == "Hold") %>% 
   mutate(correlation2 = cor(margin_of_error, outlier_per))
