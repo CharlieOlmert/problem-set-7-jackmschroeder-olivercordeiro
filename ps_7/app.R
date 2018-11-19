@@ -2,6 +2,7 @@
 library(shiny)
 library(tidyverse)
 library(readr)
+library(ggrepel)
 
 #We read in the RDS file.
 ps7 <- readRDS("ps7.rds")
@@ -58,6 +59,7 @@ server <- function(input, output) {
        ggtitle("Margin of Error vs. Outlier Percentage in Upshot Polling", subtitle = "Sorted by Seat Status, Colored by Winning Party") +
        xlab("Margin of Error") +
        ylab("Outlier Percentage") +
+       geom_label_repel(aes(label = district), size = 3, force = 3) +
 #This code assigns colors to our D and R values.
        scale_color_manual(values = c(D = "blue", R = "red"))
    })
