@@ -26,8 +26,20 @@ jack <- read_csv("jack.csv") %>%
 #have an output of regular district notation (ex. NJ-07).
   unite("district", c("state", "district"), sep="-")
 
-#We take the polldata. THIS HAS TO CHANGE BEFORE KNITTING.
+#We downloaded the Upshot data.
+download.file("https://github.com/TheUpshot/2018-live-poll-results/archive/master.zip", destfile = "upshot.zip")
+
+#We unzipped Upshot data. 
+unzip("upshot.zip")
+
+#We deleted the zipfile.
+file_delete("upshot.zip")
+
+
+#We take the polldata. 
 polldata <- dir_ls("2018-live-poll-results-master/data/")
+
+
 
 #We map the data to upshot. We also separate by hyphen
 #to extract district and wavenum from the file names.
